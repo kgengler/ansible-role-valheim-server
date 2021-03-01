@@ -30,7 +30,7 @@ $ ansible-galaxy install -r requirements.yml
 ```
 
 ## Usage
-```
+```yaml
 ---
 - name: Playbook Name
   roles:
@@ -49,7 +49,7 @@ server_name: My server
 ```
 
 Set Server World Name
-```
+```yaml
 server_world: Dedicated
 ```
 
@@ -72,7 +72,7 @@ service_user: valheim-server
 ```
 
 Set the system directory that the server will be installed at
-```
+```yaml
 application_dir: /opt/valheim-server
 ```
 
