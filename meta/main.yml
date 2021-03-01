@@ -1,13 +1,14 @@
 ---
-dependencies: []
 galaxy_info:
-  role_name: valheim-server
   author: kgengler
   description: Install Dedicated Valheim Server
-  license: license (BSD)
-  min_ansible_version: 2.0.0
-  galaxy_tags: []
+  company: N/A
+  license: license (BSD-3-Clause)
+  min_ansible_version: 2.1
   platforms:
   - name: Ubuntu
-      versions:
-        - focal
+    versions:
+      - 20.04
+  galaxy_tags: []
+
+dependencies: []
