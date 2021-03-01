@@ -1,0 +1,23 @@
+Description=Valheim Server
+Wants=network-online.target
+After=syslog.target network.target nss-lookup.target network-online.target
+
+[Service]
+Environment="LD_LIBRARY_PATH={{ application_dir }}/linux64:$LD_LIBRARY_PATH"
+Environment="TERM=xterm"
+
+Type=simple
+Restart=on-failure
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+User={{ service_user }}
+Group={{ service_user }}
+ExecStart={{ application_dir }}/valheim_server.x86_64 -name "{{ server_name }}" -port "{{ server_port }}" -world "{{ server_world }}" -password "{{ server_password }}"
+ExecReload=/bin/kill -s HUP $MAINPID
+KillSignal=SIGINT
+WorkingDirectory={{ application_dir }}
+LimitNOFILE=100000
+
+[Install]
+WantedBy=multi-user.target

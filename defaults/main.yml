@@ -1,0 +1,13 @@
+---
+server_name: My server
+server_world: Dedicated
+server_port: 2456
+server_password: secret
+
+service_user: valheim-server
+application_dir: /opt/valheim-server
+steam_app_id: 896660
+
+user_permittedlist: []
+user_bannedlist: []
+user_adminlist: []

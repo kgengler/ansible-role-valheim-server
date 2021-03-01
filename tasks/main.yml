@@ -1,0 +1,96 @@
+---
+- name: Update Repository Index
+  apt:
+    update_cache: yes
+
+- name: Enable Additional Repositories
+  shell: 'add-apt-repository {{ item }}'
+  with_items:
+    - universe
+    - multiverse
+
+- name: Enable i386 Architecture
+  shell: dpkg --add-architecture i386
+
+- name: Accept Steam Terms
+  debconf:
+    name: steam
+    question: steam/question
+    value: I AGREE
+    vtype: select
+
+- name: Accept Steam License
+  debconf:
+    name: steam
+    question: steam/license
+    value: ''
+    vtype: note
+
+- name: Install Prerequisite Packages
+  apt:
+    name:
+      - steamcmd
+      - net-tools
+      - libsdl2-2.0-0
+      - libsdl2-2.0-0:i386
+    state: latest
+    update_cache: yes
+
+- name: Configure Service User
+  user:
+    name: '{{ service_user }}'
+    shell: /bin/false
+    home: '{{ application_dir }}'
+
+- name: Stop Valheim Server
+  systemd:
+    name: valheim-server
+    state: stopped
+  register: cmd_result
+  failed_when:
+    - cmd_result.failed == true
+    - "'Could not find the requested service' not in cmd_result.msg"
+
+- name: Create Application Configuration Directory
+  file:
+    path: '{{ application_dir }}/.config/unity3d/IronGate/Valheim'
+    state: directory
+    owner: '{{ service_user }}'
+    group: '{{ service_user }}'
+
+- name: Create UAC Files
+  template:
+    src: '{{ item }}list.txt.j2'
+    dest: '{{ application_dir }}/.config/unity3d/IronGate/Valheim/{{ item }}list.txt'
+    owner: '{{ service_user }}'
+    group: '{{ service_user }}'
+    mode: '0644'
+  with_items:
+    - admin
+    - banned
+    - permitted
+
+- name: Update/Install Valheim Server
+  shell: >
+    sudo -u {{ service_user }}
+    /usr/games/steamcmd
+    +login anonymous
+    +force_install_dir {{ application_dir }}
+    +app_update {{ steam_app_id }}
+    validate
+    +exit
+  args:
+    warn: false
+
+- name: Create Systemd Unit File
+  template:
+    src: valheim-server.service.j2
+    dest: /etc/systemd/system/valheim-server.service
+    mode: '0644'
+
+- name: Start Valheim Server
+  systemd:
+    name: valheim-server
+    state: started
+    enabled: yes
+    daemon_reload: yes
