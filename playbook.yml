@@ -1,0 +1,7 @@
+---
+- name: Test Role
+  hosts: all
+  become: yes
+  roles:
+    # Use this project directory as the role to execute in vagrant
+    - name: vagrant
