@@ -65,6 +65,12 @@ Password required by client to join server
 server_password: secret
 ```
 
+Set to `1` to enable a public server. A value of `0` will make the server private. Private servers can only
+be connected to directly via "Join IP" button in-game.
+```yaml
+server_public: 0
+```
+
 ### System Customization
 Set the system user that will be created to run the server as
 ```yaml
